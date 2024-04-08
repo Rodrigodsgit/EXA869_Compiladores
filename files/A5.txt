@@ -1,0 +1,71 @@
+//testando_comentario
+
+/* testando comentario bloco */
+
+/* test@ndo
+ * coment@rio
+ * bloco
+ * com
+ * \n
+ */
+
+
+
+//Testando palavras chaves
+
+algoritmo
+principal variaveis
+constantes          registro
+fun cao Funcao funcao
+
+//Testando Id's
+
+A
+AAAA BBBB     CCCC
+A1B2C3
+_A1B2C3
+_1A2B3C
+constantesregistro constantes_registro 
+
+//Testando numero
+0 01 123 12.345 -45 -45.2
+1A2 /*Antes da nossa discurção isso era para ser numero id numero*/
+
+//Testando Operadores
++ - * / ++ -- 
++ +  - - ** ---
+
+!= == < <= > >= =
+< =  > =  = =
+
+! && ||
+
+A / B ++ C + D + 1.3
+A++C-/D
+-3 1 - 4 +1-4
+
+A != B <<= vazio === D
+
+A &&B ||CD
+
+A&&A
+
+//Testando Delimitadores
+
+; , ( ) [ ] { } 
+;,)(][}{
+4,3
+A.7
+
+[A,B;;C(D)]
+algoritmo,se(falso)
+
+
+//Testando Cadeia 
+
+"Essa e uma string"
+""
+"Ess@ /n e' /n um@ /n string /n !!!"
+
+"Essa String""Essa outra String"
+"principal" "(){}[]," "123456789.123456789"

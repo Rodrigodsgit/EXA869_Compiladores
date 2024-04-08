@@ -1,0 +1,23 @@
+1 IDE numero
+1 REL =
+2 CAC "Essa e uma string"
+2 IDE errada
+4 IDE A1
+12 IDE ABC
+13 ART -
+13 DEL .
+13 NRO 4345
+
+1 NMF 4.567.6564
+2 CMF "
+3 CMF "o ç n pode"
+4 TMF ~
+5 IMF A\C
+6 IMF A|C
+7 IMF A&C
+8 NMF 2.345t43
+9 NMF 2.345%32
+10 IMF ABC@D
+11 IMF A#E
+12 TMF _
+14 NMF 2.ABC

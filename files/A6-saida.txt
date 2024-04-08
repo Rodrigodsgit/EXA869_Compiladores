@@ -1,0 +1,9 @@
+1 NRO -3
+1 NRO 1
+1 ART -
+1 NRO 4
+1 ART +
+1 NRO 1
+1 ART -
+1 NRO 4
+Sucesso

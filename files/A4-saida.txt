@@ -1,0 +1,13 @@
+1 ART +
+1 ART -
+1 ART *
+1 ART /
+1 IDE ab
+1 ART ++
+1 REL =
+1 REL !=
+1 IDE ii
+2 ART +
+2 ART --
+2 NRO -4
+Sucesso

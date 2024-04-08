@@ -1,0 +1,14 @@
+a=b+2
+a = b + 2
+ola funcao
+a#11=" fds
+32.545.6456.
+2f3
+4-6
+10 - 20
+"5fds5 dfsd
+-2.4.facer
+facer.hj
+facer.2
+2.facer
+

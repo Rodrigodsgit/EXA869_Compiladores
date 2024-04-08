@@ -1,0 +1,14 @@
+1 IDE ola
+1 IDE chat
+2 PRE funcao
+2 IDE mudar
+2 DEL (
+2 IDE a
+2 DEL )
+3 IDE a
+3 REL =
+3 IDE a
+3 ART +
+3 NRO 2.5
+4 IDE retornar
+Sucesso
