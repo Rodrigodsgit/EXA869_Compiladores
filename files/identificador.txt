@@ -1,0 +1,17 @@
+A
+AB
+ABCD
+ABCD_
+A__D
+A1B2C3
+se_ABC
+AseB
+_ABC
+@ABC
+2ABC
+AB#C
+A-B
+A||B
+A|B
+A&A
+A&&A

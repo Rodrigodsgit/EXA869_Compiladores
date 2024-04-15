@@ -1,0 +1,28 @@
+algoritmo
+principal
+variaveis
+constantes
+registro
+funcao
+retorno
+vazio
+se
+senao
+enquanto
+leia
+escreva
+inteiro
+real
+booleano
+char
+cadeia
+verdadeiro
+falso
+
+se algoritmo  principal   variaveis
+realchar real char
+FALSO Falso falso
+boo
+leano
+se(nao)
+se-leia
