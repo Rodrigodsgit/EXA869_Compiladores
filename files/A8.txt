@@ -1,26 +1,30 @@
-Lorem ipsum dolor sit amet. Et voluptas quia a harum facilis qui sequi molestiae ex neque sapiente. Cum asperiores excepturi qui eveniet dicta aut voluptatem enim id maiores pariatur et officia reprehenderit ut deserunt eius! Et esse nulla id fuga illo ut dignissimos voluptatem aut obcaecati maxime.
+ç
+Ç
+/ algoritmo p@rincipal(){
+variaveis{
+	real f = -3.0;
+	real f = +3.0;
+3asdasd
+	@.123
+	texto msg = "teste
+	a ++ b + c ! != sda çç 
+	1/2 aa
+	1--2
+	ma@remove_circle_outline
+	a@1231.123.-1
+	1.2.3
 
-Ut ipsum deleniti qui harum aliquid et nesciunt debitis sit accusantium internos? Non soluta ipsam cum fugiat ratione aut temporibus dolores. Et rerum tempora ut odit quia quo accusamus dolorem.
 
-Aut iusto nihil et incidunt fugiat ex voluptas eligendi et aliquid dolores vel facere alias et ipsa laudantium vel fugiat excepturi. Et minima voluptatem sit libero quos est atque quibusdam ut natus deleniti.
+}
+ç
 
-Sit alias laboriosam ut quod labore in soluta sunt rem accusamus adipisci aut incidunt voluptate ea dolor eius nam odio nobis. In galisum repellendus quo reprehenderit dolore et natus blanditiis.
-
-Est pariatur repellat et debitis soluta aut itaque quidem quo suscipit harum eos omnis voluptatem. Non quasi obcaecati qui recusandae voluptate ut officia molestiae At nostrum voluptate qui tempora galisum At sunt perspiciatis.
-
-Ut sapiente dolores vel commodi impedit qui exercitationem laudantium nam doloremque harum non tenetur suscipit in saepe dolores. Et vero quidem non tempore voluptate est aspernatur suscipit. Non quis distinctio sed laudantium eaque aut galisum nostrum. Et laboriosam aperiam sit doloremque voluptate ut rerum quas.
-
-Non vitae illum et quasi quia ad doloribus repudiandae et voluptate dolor qui labore doloribus. Aut sequi asperiores et doloremque suscipit ea soluta quos aut voluptatum eligendi.
-
-Et consequatur maiores et doloribus impedit et dolorum neque ut odit dicta id amet voluptatibus. Id eligendi commodi ut atque molestias et repudiandae quasi ut consequatur enim et corrupti nobis? Non voluptatem facilis qui quia blanditiis 33 atque asperiores et nemo ducimus eum dolor dicta ut dolorem quia.
-
-Qui inventore quia ut dicta ratione a praesentium optio. A totam deleniti ut voluptatem maxime et officia omnis qui atque quia. Qui voluptas vitae id perspiciatis quam id perspiciatis minus.
-
-Ea sapiente ipsam sed quia enim et voluptas voluptates et dicta quam! In minus omnis est laboriosam beatae ut cupiditate quae in impedit nihil in eveniet dolor aut tempora molestiae et iusto omnis.
-
-Sit perspiciatis laboriosam ea libero optio est perferendis sint. Id illo saepe nam earum consectetur est beatae voluptatem et eaque corrupti. Eum sint explicabo 33 ducimus reiciendis non itaque quae sit molestiae fuga!
-
-Ut aspernatur voluptatem ab ipsum sint ab assumenda aliquid est eligendi molestiae hic molestiae exercitationem. Hic ipsa dolor et facere iste qui temporibus facilis in sint incidunt. Ut distinctio omnis aut unde quia aut illum ullam? Sed dolores excepturi et voluptas architecto non nesciunt dolore ad sint voluptate est laborum labore.
-
-Et obcaecati fuga qui facere quos qui accusantium ipsum est aliquam animi est rerum consequatur qui libero alias qui laudantium mollitia. Et voluptatem fuga ut consequatur aliquam vel impedit aliquid. Qui velit atque et delectus repellendus non neque repellat ea doloremque numquam ut suscipit deserunt quo velit officiis in recusandae officiis. Aut quis quae non consequatur dolorum non animi voluptatem qui molestias dolores.
-
+se ( f >= -10) && (f < ) {
+	escreva("mensagem");
+	escreva("menÇagem");
+// exemplo de teste do lexico
+/* exemplo de teste do lexico bloco
+}
+/* exa869 mi processadores de
+		linguagem de programacao
+}*/
+ç
