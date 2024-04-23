@@ -19,22 +19,14 @@ import os
 # IMF identificador mal formado
 # TMF token mal formado
 
-TOKENS_REGEX = [
-    # ('COMENTARIO_LINHA', r'//.*'),
-    # ('COMENTARIO_BLOCO', r'/\*[\s\S]*?\*/'),
-    #('PRE', r'\b(algoritmo|principal|variaveis|constantes|registro|funcao|retorno|vazio|se|senao|enquanto|leia|escreva|inteiro|real|booleano|char|cadeia|verdadeiro|falso)\b'),
-    #('NRO', r'(-)?\d+(\.\d+)?'),
-    # ('ART', r'\+\+|--|\+|-|\*|/'),
-    # ('REL', r'!=|==|<=|>=|<|>|='),
-    # ('LOG', r'!|&&|\|\|'),
-    # ('DEL', r'[;,.()\[\]{}]'),
-    #('CAC', r'"[ -!#-~]*"'),  
-    #('IDE', r'\b[a-zA-Z_][a-zA-Z0-9_]*\b')
-]
 
 DIR_FILES = 'files'
 
 TOKENS_ERROS = re.compile(r'\b(IMF|NMF|CMF|TMF)\b')
+TOKENS_RESERVADOS = re.compile(r'\b(algoritmo|principal|variaveis|constantes|registro|funcao|retorno|vazio|se|senao|enquanto|leia|escreva|inteiro|real|booleano|char|cadeia|verdadeiro|falso)\b')
+TOKENS_NUMEROS = re.compile(r'^-?\d+(\.\d+)?$')
+TOKENS_IDENTIFICADORES = re.compile(r'^[a-zA-Z_][a-zA-Z0-9_]*$')
+TOKENS_DELIMITADORES = re.compile(r'[;,.()\[\]{}]')
 
 async def processar_comentarios(linha, posicao, dentro_comentario_bloco, conteudo_comentario, linha_inicio_comentario, linha_num):
     if dentro_comentario_bloco:
@@ -63,8 +55,7 @@ async def processar_comentarios(linha, posicao, dentro_comentario_bloco, conteud
     return posicao, dentro_comentario_bloco, conteudo_comentario, linha_inicio_comentario
 
 async def processar_palavras_reservadas(linha, posicao, saida, linha_num, token_atual):
-    regex_palavras_reservadas = re.compile(r'\b(algoritmo|principal|variaveis|constantes|registro|funcao|retorno|vazio|se|senao|enquanto|leia|escreva|inteiro|real|booleano|char|cadeia|verdadeiro|falso)\b')
-    match_palavras_reservadas = regex_palavras_reservadas.match(linha, pos=posicao)
+    match_palavras_reservadas = TOKENS_RESERVADOS.match(linha, pos=posicao)
     if match_palavras_reservadas:
         palavra_reservada = match_palavras_reservadas.group(0)
         await saida.write(f"{linha_num} PRE {palavra_reservada}\n")
@@ -131,7 +122,7 @@ async def processar_numeros(linha, posicao, saida, linha_num, erro_encontrado, l
                     mal_formado = True
                     posicao += 1
                 elif ponto_ocorrencia == 1:
-                    if not re.match(r'^-?\d+(\.\d+)?$',linha[inicio_numero:posicao]):
+                    if not TOKENS_NUMEROS.match(linha[inicio_numero:posicao]):
                         break
                     else:
                         erro_encontrado = True
@@ -156,7 +147,7 @@ async def processar_numeros(linha, posicao, saida, linha_num, erro_encontrado, l
 
     possivel_numero = linha[inicio_numero:posicao]
 
-    if re.match(r'^-?\d+(\.\d+)?$', possivel_numero) and not mal_formado:
+    if TOKENS_NUMEROS.match(possivel_numero) and not mal_formado:
         possivel_numero = possivel_numero.replace("\n", "")
         await saida.write(f"{linha_num} NRO {possivel_numero}\n")
         token_atual = "NRO"
@@ -184,7 +175,7 @@ async def processar_identificadores(linha, posicao, saida, linha_num, erro_encon
         lista_erros.append(f"{linha_num} IMF {token_malformado}\n")
         token_atual = "IMF"
         erro_encontrado = True
-    elif re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', possivel_identificador):
+    elif TOKENS_IDENTIFICADORES.match(possivel_identificador):
         await saida.write(f"{linha_num} IDE {possivel_identificador}\n")
         token_atual = "IDE"
     else:
@@ -273,7 +264,7 @@ async def processar_operadores_relacionais(linha, posicao, saida, linha_num, tok
     return posicao, token_atual
 
 async def processar_delimitadores(linha, posicao, saida, linha_num, token_atual):
-    if re.match( r'[;,.()\[\]{}]', linha[posicao]):
+    if TOKENS_DELIMITADORES.match(linha[posicao]):
         await saida.write(f"{linha_num} DEL {linha[posicao]}\n")
         token_atual = "DEL"
         posicao += 1

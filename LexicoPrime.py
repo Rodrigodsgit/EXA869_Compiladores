@@ -35,7 +35,6 @@ TOKENS_REGEX = [
 DIR_FILES = 'files'
 
 TOKENS_ERROS = re.compile(r'\b(IMF|NMF|CMF|TMF)\b')
-TOKEN_PALAVRA_RESERVADA = re.compile(r'\b(algoritmo|principal|variaveis|constantes|registro|funcao|retorno|vazio|se|senao|enquanto|leia|escreva|inteiro|real|booleano|char|cadeia|verdadeiro|falso)\b')
 
 async def processar_comentarios(linha, posicao, dentro_comentario_bloco, conteudo_comentario, linha_inicio_comentario, linha_num):
     if dentro_comentario_bloco:
@@ -64,7 +63,8 @@ async def processar_comentarios(linha, posicao, dentro_comentario_bloco, conteud
     return posicao, dentro_comentario_bloco, conteudo_comentario, linha_inicio_comentario
 
 async def processar_palavras_reservadas(linha, posicao, saida, linha_num, token_atual):
-    match_palavras_reservadas = TOKEN_PALAVRA_RESERVADA.match(linha, pos=posicao)
+    regex_palavras_reservadas = re.compile(r'\b(algoritmo|principal|variaveis|constantes|registro|funcao|retorno|vazio|se|senao|enquanto|leia|escreva|inteiro|real|booleano|char|cadeia|verdadeiro|falso)\b')
+    match_palavras_reservadas = regex_palavras_reservadas.match(linha, pos=posicao)
     if match_palavras_reservadas:
         palavra_reservada = match_palavras_reservadas.group(0)
         await saida.write(f"{linha_num} PRE {palavra_reservada}\n")
@@ -312,7 +312,7 @@ async def analisar_lexicamente(caminho_arquivo, caminho_saida):
                     if not dentro_comentario_bloco and (linha[posicao].isdigit() or linha[posicao] == '-' ):
                         posicao, erro_encontrado, token_atual = await processar_numeros(linha, posicao, saida, linha_num, erro_encontrado, lista_erros, token_atual)
                         controle = 0
-                    if not dentro_comentario_bloco and linha[posicao].isalpha() :
+                    if not dentro_comentario_bloco and linha[posicao].isalpha() and not(ord(linha[posicao]) < 32 or ord(linha[posicao]) > 126) :
                         posicao, erro_encontrado, token_atual = await processar_identificadores(linha, posicao, saida, linha_num, erro_encontrado, lista_erros, token_atual)
                         controle = 0
                     if not dentro_comentario_bloco and re.match(r'\+\+|--|\+|-|\*|/', linha[posicao]) and not linha[posicao:posicao+2].isdigit():
