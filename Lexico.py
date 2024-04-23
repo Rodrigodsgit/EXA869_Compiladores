@@ -312,7 +312,7 @@ async def analisar_lexicamente(caminho_arquivo, caminho_saida):
                     if not dentro_comentario_bloco and (linha[posicao].isdigit() or linha[posicao] == '-' ):
                         posicao, erro_encontrado, token_atual = await processar_numeros(linha, posicao, saida, linha_num, erro_encontrado, lista_erros, token_atual)
                         controle = 0
-                    if not dentro_comentario_bloco and linha[posicao].isalpha() :
+                    if not dentro_comentario_bloco and linha[posicao].isalpha() and not(ord(linha[posicao]) < 32 or ord(linha[posicao]) > 126) :
                         posicao, erro_encontrado, token_atual = await processar_identificadores(linha, posicao, saida, linha_num, erro_encontrado, lista_erros, token_atual)
                         controle = 0
                     if not dentro_comentario_bloco and re.match(r'\+\+|--|\+|-|\*|/', linha[posicao]) and not linha[posicao:posicao+2].isdigit():

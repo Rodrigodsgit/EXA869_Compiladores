@@ -60,17 +60,18 @@
 23 DEL )
 23 DEL ;
 
-1 IMF ç
-2 IMF Ç
+1 TMF ç
+2 TMF Ç
 3 IMF p@rincipal
 7 NMF 3asdasd
 8 TMF @
 9 CMF "teste
-10 IMF çç
+10 TMF ç
+10 TMF ç
 13 IMF ma@remove_circle_outline
 14 IMF a@1231
 14 NMF 123.-1
 15 NMF 1.2.3
-19 IMF ç
+19 TMF ç
 23 CMF "menÇagem"
-30 IMF ç
+30 TMF ç
