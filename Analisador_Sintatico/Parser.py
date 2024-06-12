@@ -10,13 +10,18 @@ class Parser:
     def advance(self):
         self.current_token_index += 1
 
-    def match(self, expected_type, expected_value=None):
+    def match(self, expected_type, expected_value=None, first=True):
         token = self.current_token()
-        if token[1] == expected_type and (expected_value is None or token[2] == expected_value):
+        if token[1] == expected_type and (expected_value is None or token[2] in expected_value):
             self.advance()
         else:
-            self.errors.append(f"Erro: Esperado {expected_type} na linha {token[0]}, encontrado {token[1]}")
-            self.advance()
+            if first:
+                self.errors.append(f"Erro: Na linha {token[0]} esperava-se {expected_value} e foi encontrado {token[2]}")
+                self.advance()
+                self.match(expected_type, expected_value, False)
+            else:
+                self.advance()
+                self.match( expected_type, expected_value, False)
 
     def algoritmo(self):
         self.match('PRE', 'algoritmo')
@@ -25,13 +30,22 @@ class Parser:
         self.match('DEL', '}')
 
     def corpo(self):
-        if self.current_token()[2] == 'constantes':
-            self.blocodeconstantes()
-        if self.current_token()[2] == 'variaveis':
-            self.blocodevariaveis()
-        self.funcaoprincipal()
 
-    def blocodeconstantes(self):
+
+        if self.current_token()[2] == 'constantes':
+            self.blocode_constantes()
+        if self.current_token()[2] == 'variaveis':
+            self.blocode_variaveis()
+        if self.current_token()[2] == 'registro':
+            self.bloco_registro
+        if self.current_token()[2] == 'funcao':
+            self.funcao()
+        if self.current_token()[2] == 'principal':
+            self.funcaoprincipal()
+        else:
+            pass
+
+    def blocode_constantes(self):
         self.match('PRE', 'constantes')
         self.match('DEL', '{')
         while self.current_token()[2] != '}':
@@ -39,7 +53,7 @@ class Parser:
             pass
         self.match('DEL', '}')
 
-    def blocodevariaveis(self):
+    def blocode_variaveis(self):
         self.match('PRE', 'variaveis')
         self.match('DEL', '{')
         while self.current_token()[2] != '}':
@@ -47,7 +61,21 @@ class Parser:
             pass
         self.match('DEL', '}')
 
-    def funcaoprincipal(self):
+    def bloco_registro(self):
+        self.match('PRE', 'registro')
+        self.match('DEL', '{')
+        while self.current_token()[2] != '}':
+            # Implementar a analise do corpo do bloco de registro aqui
+            pass
+        self.match('DEL', '}')
+
+    def funcao(self):
+        self.match('PRE', 'funcao')
+        self.match('DEL', '{')
+        # Implementar a analise do corpo da função aqui
+        self.match('DEL', '}')
+
+    def funcao_principal(self):
         self.match('PRE', 'principal')
         self.match('DEL', '{')
         # Implementar a análise do corpo da função principal aqui
