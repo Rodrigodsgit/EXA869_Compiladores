@@ -3,6 +3,8 @@ class Parser:
         self.tokens = tokens
         self.current_token_index = 0
         self.errors = []
+        self.fechaparetense = '}'
+
 
     def current_token(self):
         return self.tokens[self.current_token_index] if self.current_token_index < len(self.tokens) else ('EOF', 'EOF', 'EOF')
@@ -10,11 +12,14 @@ class Parser:
     def advance(self):
         self.current_token_index += 1
 
+
     def match(self, expected_type, expected_value=None, first=True):
         token = self.current_token()
         if token[1] == expected_type and (expected_value is None or token[2] in expected_value):
             self.advance()
         else:
+            if token[0] == 'EOF':
+                return
             if first:
                 self.errors.append(f"Erro: Na linha {token[0]} esperava-se {expected_value} e foi encontrado {token[2]}")
                 self.advance()
@@ -30,22 +35,45 @@ class Parser:
         self.match('DEL', '}')
 
     def corpo(self):
+        expected_blocks = ['constantes', 'variaveis', 'registro', 'funcao', 'principal']
+        found_principal = False
+
+        while self.current_token() != 'EOF' and not found_principal:
+            token = self.current_token()
+            if token[2] == 'principal':
+                self.funcao_principal()
+                expected_blocks.remove('principal')
+                found_principal = True
+            elif token[2] in expected_blocks:
+                if token[2] == 'constantes':
+                    self.bloco_constantes()
+                elif token[2] == 'variaveis':
+                    self.bloco_variaveis()
+                elif token[2] == 'registro':
+                    self.bloco_registro()
+                elif token[2] == 'funcao':
+                    self.funcao()
+                expected_blocks.remove(token[2])
+            else:
+                self.errors.append(f"Erro: Na linha {token[0]} esperava-se {' ou '.join(expected_blocks)} e foi encontrado {token[2]}")
+                self.advance()  # 
+
+        # Verifica se há tokens após o bloco 'principal'
+        if found_principal and self.current_token()[2] != '}':
+            token = self.current_token()
+            if token[0] == 'EOF':
+                self.errors.append(f"Erro: Na linha {token[0]} esperava-se '{self.fechaparetense}'e foi encontrado EOF")
+                return
+            self.errors.append(f"Erro: Na linha {token[0]} não se esperava nenhum bloco após 'principal', mas encontrado {token[2]}")
+            while (self.current_token()[0] != 'EOF') and (self.current_token()[2] != '}'):  
+                self.advance()
+
+        # Verifica se o bloco 'principal' foi encontrado
+        elif not found_principal:
+            self.errors.append("Erro: Bloco 'principal' não encontrado, mas é obrigatório.")
 
 
-        if self.current_token()[2] == 'constantes':
-            self.blocode_constantes()
-        if self.current_token()[2] == 'variaveis':
-            self.blocode_variaveis()
-        if self.current_token()[2] == 'registro':
-            self.bloco_registro
-        if self.current_token()[2] == 'funcao':
-            self.funcao()
-        if self.current_token()[2] == 'principal':
-            self.funcaoprincipal()
-        else:
-            pass
-
-    def blocode_constantes(self):
+    def bloco_constantes(self):
         self.match('PRE', 'constantes')
         self.match('DEL', '{')
         while self.current_token()[2] != '}':
@@ -53,7 +81,7 @@ class Parser:
             pass
         self.match('DEL', '}')
 
-    def blocode_variaveis(self):
+    def bloco_variaveis(self):
         self.match('PRE', 'variaveis')
         self.match('DEL', '{')
         while self.current_token()[2] != '}':
@@ -104,6 +132,7 @@ tokens = [
     (4, 'DEL', '{'), 
     (4, 'DEL', '}'), 
     (5, 'DEL', '}')
+
 ]
 
 
