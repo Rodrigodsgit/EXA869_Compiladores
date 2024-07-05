@@ -7,7 +7,19 @@ algoritmo {
     }
 
     variaveis {
+        booleano exemploBooleano;
+        inteiro exemploInteiro;
+        real exemploReal;
+        char exemploCaractere;
+        cadeia exemploCadeia;
     }
+
+    registro Pessoa {
+    cadeia nome; 
+    inteiro idade;
+    booleano ativo;
+}
+
 
     principal {
     }

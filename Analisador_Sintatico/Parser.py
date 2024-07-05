@@ -50,6 +50,7 @@ class Parser:
                 self.funcao_principal()
                 expected_blocks.remove('principal')
                 found_principal = True
+            # Logica errada, mudar para ifs e colocar o remove no final de cada
             elif token[2] in expected_blocks:
                 if token[2] == 'constantes':
                     self.bloco_constantes()
@@ -234,18 +235,55 @@ class Parser:
         self.match('PRE', 'variaveis')
         self.match('DEL', '{')
         while self.current_token()[2] != '}':
-            # Implementar a análise das declarações de variáveis aqui
-            pass
+            self.declaracao_de_variavel()
         self.match('DEL', '}')
+
+    def declaracao_de_variavel(self):
+        token = self.current_token()
+        tipos = ['booleano', 'inteiro', 'real', 'char', 'cadeia']
+        if token[2] in tipos:
+            self.tipo_variavel()
+            self.IDE_vetor()
+            self.listagem_de_identificador()
+            self.match('DEL', ';')
+        else:
+            self.errors.append(f"Erro: Tipo de variável inválido na linha {token[0]} encontrado {token[2]}")
+            self.advance()
+
+    def tipo_variavel(self):
+        tipos = ['booleano', 'inteiro', 'real', 'char', 'cadeia']
+        if self.current_token()[2] in tipos:
+            self.advance()
+
+    def IDE_vetor(self):
+        self.match('IDE')
+        self.vetor
+
+    def vetor(self):
+        while self.current_token()[2] == '[':
+            self.advance()
+            self.expressao_numerica()
+            self.match('DEL', ']')
+
+    def listagem_de_identificador(self):
+        while self.current_token()[2] == ',':
+            self.advance()
+            self.IDE_vetor()
+            
+# ------------------------------------------------------------------
 
     def bloco_registro(self):
         self.match('PRE', 'registro')
+        self.match('IDE')
         self.match('DEL', '{')
-        while self.current_token()[2] != '}':
-            # Implementar a analise do corpo do bloco de registro aqui
-            pass
+        self.listagem_bloco_variaveis()
         self.match('DEL', '}')
 
+    def listagem_bloco_variaveis(self):
+        while self.current_token()[2] != '}':
+            self.declaracao_de_variavel()
+
+# ------------------------------------------------------------------
     def funcao(self):
         self.match('PRE', 'funcao')
         self.match('DEL', '{')
