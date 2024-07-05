@@ -285,17 +285,217 @@ class Parser:
 
 # ------------------------------------------------------------------
     def funcao(self):
-        self.match('PRE', 'funcao')
+        self.tipo_retorno()
+        self.match('IDE')
+        self.match('DEL', '(')
+        self.listagem_declaracao_parametros()
+        self.match('DEL', ')')
         self.match('DEL', '{')
-        # Implementar a analise do corpo da função aqui
+        self.escopo()
         self.match('DEL', '}')
 
     def funcao_principal(self):
         self.match('PRE', 'principal')
+        self.match('DEL', '(')
+        self.listagem_declaracao_parametros()
+        self.match('DEL', ')')
         self.match('DEL', '{')
-        # Implementar a análise do corpo da função principal aqui
+        self.escopo()
         self.match('DEL', '}')
 
+    def tipo_retorno(self):
+        tipos = ['booleano', 'inteiro', 'real', 'char', 'cadeia', 'vazio']
+        if self.current_token()[2] in tipos or self.current_token()[1] == 'IDE':
+            self.advance()
+        else:
+            self.errors.append(f"Erro: Tipo de retorno inválido na linha {self.current_token()[0]} encontrado {self.current_token()[2]}")
+            self.advance()
+
+    def listagem_declaracao_parametros(self):
+        if self.current_token()[2] != ')':
+            self.tipo_variavel()
+            self.IDE_vetor()
+            self.mais_declaracao_parametros()
+
+    def mais_declaracao_parametros(self):
+        while self.current_token()[2] == ',':
+            self.advance()
+            self.tipo_variavel()
+            self.IDE_vetor()
+
+    def escopo(self):
+        if self.current_token()[2] == 'constantes':
+            self.bloco_constantes()
+        if self.current_token()[2] == 'variaveis':
+            self.bloco_variaveis()
+        self.bloco()
+        self.retorno()
+
+    def bloco(self):
+        while self.current_token()[2] not in ['}', 'retorno']:
+            if self.current_token()[2] == 'se':
+                self.se()
+            elif self.current_token()[2] == 'enquanto':
+                self.enquanto()
+            elif self.current_token()[2] == 'leia':
+                self.leia()
+            elif self.current_token()[2] == 'escreva':
+                self.escreva()
+            elif self.current_token()[1] == 'IDE':
+                self.reatribuicao()
+            else:
+                self.errors.append(f"Erro: Comando inválido na linha {self.current_token()[0]} encontrado {self.current_token()[2]}")
+                self.advance()
+
+    def retorno(self):
+        if self.current_token()[2] == 'retorno':
+            self.match('PRE', 'retorno')
+            if self.current_token()[2] != ';':
+                self.expressao_geral()
+            self.match('DEL', ';')
+
+    def se(self):
+        self.match('PRE', 'se')
+        self.match('DEL', '(')
+        self.expressao_geral()
+        self.match('DEL', ')')
+        self.match('DEL', '{')
+        self.bloco()
+        self.match('DEL', '}')
+        if self.current_token()[2] == 'senao':
+            self.senao()
+
+    def senao(self):
+        self.match('PRE', 'senao')
+        self.match('DEL', '{')
+        self.bloco()
+        self.match('DEL', '}')
+
+    def enquanto(self):
+        self.match('PRE', 'enquanto')
+        self.match('DEL', '(')
+        self.expressao_geral()
+        self.match('DEL', ')')
+        self.match('DEL', '{')
+        self.bloco()
+        self.match('DEL', '}')
+
+    def leia(self):
+        self.match('PRE', 'leia')
+        self.match('DEL', '(')
+        self.listagem_leia()
+        self.match('DEL', ')')
+        self.match('DEL', ';')
+
+    def listagem_leia(self):
+        self.IDE_vetor()
+        self.mais_parametros_leia()
+
+    def mais_parametros_leia(self):
+        while self.current_token()[2] == ',':
+            self.advance()
+            self.IDE_vetor()
+
+    def escreva(self):
+        self.match('PRE', 'escreva')
+        self.match('DEL', '(')
+        self.listagem_parametros()
+        self.match('DEL', ')')
+        self.match('DEL', ';')
+
+    def listagem_parametros(self):
+        if self.current_token()[2] != ')':
+            self.expressao_geral()
+            self.mais_parametros()
+
+    def mais_parametros(self):
+        while self.current_token()[2] == ',':
+            self.advance()
+            self.expressao_geral()
+
+    def reatribuicao(self):
+        self.match('IDE')
+        self.reatribuicao_simples_ou_vetor_ou_composto()
+        self.match('DEL', ';')
+
+    def reatribuicao_simples_ou_vetor_ou_composto(self):
+        while self.current_token()[2] in ['[', '.', '=']:
+            if self.current_token()[2] == '[':
+                self.advance()
+                self.expressao_numerica()
+                self.match('DEL', ']')
+            elif self.current_token()[2] == '.':
+                self.advance()
+                self.match('IDE')
+            elif self.current_token()[2] == '=':
+                self.advance()
+                self.expressao_geral()
+
+    def expressao_geral(self):
+        self.expressao_AND_geral()
+        self.operacao_OR_geral()
+
+    def operacao_OR_geral(self):
+        if self.current_token()[2] == '||':
+            self.advance()
+            self.expressao_geral()
+
+    def expressao_AND_geral(self):
+        self.expressao_REL_geral()
+        self.operacao_AND_geral()
+
+    def operacao_AND_geral(self):
+        if self.current_token()[2] == '&&':
+            self.advance()
+            self.expressao_AND_geral()
+
+    def expressao_REL_geral(self):
+        self.expressao_NOT_geral()
+        self.operacao_REL_geral()
+
+    def operacao_REL_geral(self):
+        if self.current_token()[2] in ['==', '!=', '>', '<', '>=', '<=']:
+            self.advance()
+            self.expressao_NOT_geral()
+
+    def expressao_NOT_geral(self):
+        if self.current_token()[2] == '!':
+            self.advance()
+            self.parcela_booleana()
+        else:
+            self.expressao_AS_geral()
+
+    def expressao_AS_geral(self):
+        self.expressao_MD_geral()
+        self.operacao_AS_geral()
+
+    def operacao_AS_geral(self):
+        if self.current_token()[2] in ['+', '-']:
+            self.advance()
+            self.expressao_numerica()
+
+    def expressao_MD_geral(self):
+        self.parcela_geral()
+        self.operacao_MD_geral()
+
+    def operacao_MD_geral(self):
+        if self.current_token()[2] in ['*', '/']:
+            self.advance()
+            self.expressao_MD()
+
+    def parcela_geral(self):
+        if self.current_token()[1] in ['IDE', 'NRO', 'CAC']:
+            self.advance()
+        elif self.current_token()[2] == 'verdadeiro':
+            self.advance()
+        elif self.current_token()[2] == 'falso':
+            self.advance()
+        elif self.current_token()[2] == '(':
+            self.advance()
+            self.expressao_geral()
+            self.match('DEL', ')')
+
+# ------------------------------------------------------------------
     def parse(self):
         self.algoritmo()
         if self.errors:
