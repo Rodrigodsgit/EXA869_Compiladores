@@ -1,3 +1,9 @@
+import subprocess
+import os
+
+path_to_analisador = os.path.join('..', 'Analisador_Lexico', 'AnalisadorLexico.py')
+dir_files = os.path.join('..', 'Analisador_Lexico', 'files')
+
 class Parser:
     def __init__(self, tokens):
         self.tokens = tokens
@@ -73,13 +79,156 @@ class Parser:
             self.errors.append("Erro: Bloco 'principal' não encontrado, mas é obrigatório.")
 
 
+# ------------------------------------------------------------------
+
     def bloco_constantes(self):
         self.match('PRE', 'constantes')
         self.match('DEL', '{')
         while self.current_token()[2] != '}':
-            # Implementar a análise das declarações de constantes aqui
-            pass
+            self.declaracao_de_constante()
         self.match('DEL', '}')
+
+    def declaracao_de_constante(self):
+        token = self.current_token()
+        if token[2] == 'booleano':
+            self.declaracao_booleana()
+        elif token[2] in ['inteiro', 'real']:
+            self.declaracao_numerica()
+        elif token[2] == 'cadeia':
+            self.declaracao_de_cadeia()
+        elif token[2] == 'char':
+            self.declaracao_de_caractere()
+        else:
+            self.errors.append(f"Erro: Tipo de constante inválido na linha {token[0]} encontrado {token[2]}")
+            self.advance()
+
+    def declaracao_booleana(self):
+        self.match('PRE', 'booleano')
+        self.match('IDE')
+        self.match('REL', '=')
+        self.expressao_booleana()
+        self.listagem_constante_booleana()
+        self.match('DEL', ';')
+
+    def listagem_constante_booleana(self):
+        while self.current_token()[2] == ',':
+            self.advance()
+            self.match('IDE')
+            self.match('REL', '=')
+            self.expressao_booleana()
+
+    def declaracao_numerica(self):
+        if self.current_token()[2] == 'inteiro':
+            self.match('PRE', 'inteiro')
+        else:
+            self.match('PRE', 'real')
+        self.match('IDE')
+        self.match('REL', '=')
+        self.expressao_numerica()
+        self.listagem_constante_numerica()
+        self.match('DEL', ';')
+
+    def listagem_constante_numerica(self):
+        while self.current_token()[2] == ',':
+            self.advance()
+            self.match('IDE')
+            self.match('REL', '=')
+            self.expressao_numerica()
+
+    def declaracao_de_cadeia(self):
+        self.match('PRE', 'cadeia')
+        self.match('IDE')
+        self.match('REL', '=')
+        self.match('CAC')
+        self.listagem_constante_de_cadeia()
+        self.match('DEL', ';')
+
+    def listagem_constante_de_cadeia(self):
+        while self.current_token()[2] == ',':
+            self.advance()
+            self.match('IDE')
+            self.match('REL', '=')
+            self.match('CAC')
+
+    def declaracao_de_caractere(self):
+        self.match('PRE', 'char')
+        self.match('IDE')
+        self.match('REL', '=')
+        self.match('CAC')
+        self.listagem_constante_de_caractere()
+        self.match('DEL', ';')
+
+    def listagem_constante_de_caractere(self):
+        while self.current_token()[2] == ',':
+            self.advance()
+            self.match('IDE')
+            self.match('REL', '=')
+            self.match('CAC')
+
+    def expressao_booleana(self):
+        self.expressao_AND()
+        self.operacao_OR()
+
+    def operacao_OR(self):
+        if self.current_token()[2] == '||':
+            self.advance()
+            self.expressao_booleana()
+
+    def expressao_AND(self):
+        self.expressao_NOT()
+        self.operacao_AND()
+
+    def operacao_AND(self):
+        if self.current_token()[2] == '&&':
+            self.advance()
+            self.expressao_AND()
+
+    def expressao_NOT(self):
+        if self.current_token()[2] == '!':
+            self.advance()
+            self.parcela_booleana()
+        else:
+            self.parcela_booleana()
+
+    def parcela_booleana(self):
+        if self.current_token()[2] in ['verdadeiro', 'falso']:
+            self.advance()
+        elif self.current_token()[1] == 'IDE':
+            self.advance()
+        elif self.current_token()[2] == '(':
+            self.advance()
+            self.expressao_booleana()
+            self.match('DEL', ')')
+
+    def expressao_numerica(self):
+        self.expressao_MD()
+        self.operacao_AS()
+
+    def operacao_AS(self):
+        if self.current_token()[2] in ['+', '-']:
+            op = self.current_token()[2]
+            self.advance()
+            self.expressao_numerica()
+
+    def expressao_MD(self):
+        self.parcela_numerica()
+        self.operacao_MD()
+
+    def operacao_MD(self):
+        if self.current_token()[2] in ['*', '/']:
+            op = self.current_token()[2]
+            self.advance()
+            self.expressao_MD()
+
+    def parcela_numerica(self):
+        if self.current_token()[1] in ['NRO', 'IDE']:
+            self.advance()
+        elif self.current_token()[2] == '(':
+            self.advance()
+            self.expressao_numerica()
+            self.match('DEL', ')')
+
+# ------------------------------------------------------------------
 
     def bloco_variaveis(self):
         self.match('PRE', 'variaveis')
@@ -118,23 +267,30 @@ class Parser:
         else:
             print("Análise concluída com sucesso, sem erros.")
 
-# Exemplo de uso:
-tokens = [
-    (1, 'PRE', 'algoritmo'), 
-    (1, 'DEL', '{'), 
-    (2, 'PRE', 'constantes'), 
-    (2, 'DEL', '{'), 
-    (2, 'DEL', '}'), 
-    (3, 'PRE', 'variaveis'), 
-    (3, 'DEL', '{'), 
-    (3, 'DEL', '}'), 
-    (4, 'PRE', 'principal'), 
-    (4, 'DEL', '{'), 
-    (4, 'DEL', '}'), 
-    (5, 'DEL', '}')
 
-]
+def executar_analisador_lexico():
+    try:
+        result = subprocess.run(['python', path_to_analisador], check=True, capture_output=True, text=True)
+        print("Saída do Analisador Lexico:\n", result.stdout)
+    except subprocess.CalledProcessError as e:
+        print("Erro ao executar o Analisador Lexico:", e.stderr)
+
+executar_analisador_lexico()
+
+def ler_arquivos_saida(dir_files):
+    lista_tuplas = []
+    for arquivo in os.listdir(dir_files):
+        if arquivo.endswith('-saida.txt'):
+            caminho_arquivo = os.path.join(dir_files, arquivo)
+            with open(caminho_arquivo, 'r') as file:
+                linhas = file.readlines()
+                for linha in linhas:
+                    linha = linha.strip()  
+                    if linha and linha != "Sucesso": 
+                        tupla = tuple(linha.split())
+                        lista_tuplas.append(tupla)
+            parser = Parser(lista_tuplas)
+            parser.parse()
 
 
-parser = Parser(tokens)
-parser.parse()
+ler_arquivos_saida(dir_files)

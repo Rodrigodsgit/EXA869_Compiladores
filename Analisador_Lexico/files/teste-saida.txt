@@ -1,0 +1,33 @@
+1 PRE algoritmo
+1 DEL {
+2 PRE constantes
+2 DEL {
+3 PRE booleano
+3 IDE verdadeiroExemplo
+3 REL =
+3 PRE verdadeiro
+3 DEL ;
+4 PRE inteiro
+4 IDE numeroExemplo
+4 REL =
+4 NRO 10
+4 DEL ;
+5 PRE cadeia
+5 IDE textoExemplo
+5 REL =
+5 CAC "Exemplo de texto"
+5 DEL ;
+6 PRE char
+6 IDE caractereExemplo
+6 REL =
+6 CAC "A"
+6 DEL ;
+7 DEL }
+9 PRE variaveis
+9 DEL {
+10 DEL }
+12 PRE principal
+12 DEL {
+13 DEL }
+14 DEL }
+Sucesso

@@ -20,7 +20,7 @@ import os
 # TMF token mal formado
 
 
-DIR_FILES = 'files'
+DIR_FILES = os.path.join(os.path.dirname(__file__), 'files')
 
 TOKENS_ERROS = re.compile(r'\b(IMF|NMF|CMF|TMF)\b')
 TOKENS_RESERVADOS = re.compile(r'\b(algoritmo|principal|variaveis|constantes|registro|funcao|retorno|vazio|se|senao|enquanto|leia|escreva|inteiro|real|booleano|char|cadeia|verdadeiro|falso)\b')

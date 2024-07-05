@@ -1,0 +1,14 @@
+algoritmo {
+    constantes {
+        booleano verdadeiroExemplo = verdadeiro;
+        inteiro numeroExemplo = 10;
+        cadeia textoExemplo = "Exemplo de texto";
+        char caractereExemplo = "A";
+    }
+
+    variaveis {
+    }
+
+    principal {
+    }
+}

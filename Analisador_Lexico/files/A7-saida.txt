@@ -1,6 +1,0 @@
-1 PRE algoritmo
-2 NRO -4
-3 CAC ""
-3 NRO -4
-
-2 IMF A@
