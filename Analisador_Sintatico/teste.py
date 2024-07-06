@@ -202,26 +202,31 @@ class Parser:
             self.match('DEL', ')')
 
     def expressao_numerica(self):
+        self.current_token()
         self.expressao_MD()
         self.operacao_AS()
 
     def operacao_AS(self):
+        self.current_token()
         if self.current_token()[2] in ['+', '-']:
             op = self.current_token()[2]
             self.advance()
             self.expressao_numerica()
 
     def expressao_MD(self):
+        self.current_token()
         self.parcela_numerica()
         self.operacao_MD()
 
     def operacao_MD(self):
+        self.current_token()
         if self.current_token()[2] in ['*', '/']:
             op = self.current_token()[2]
             self.advance()
             self.expressao_MD()
 
     def parcela_numerica(self):
+        self.current_token()
         if self.current_token()[1] in ['NRO', 'IDE']:
             self.advance()
         elif self.current_token()[2] == '(':
@@ -506,30 +511,93 @@ class Parser:
         else:
             print("Análise concluída com sucesso, sem erros.")
 
+# Exemplo de uso:
+tokens = [
+    (1, 'PRE', 'algoritmo'), 
+    (1, 'DEL', '{'), 
+    (2, 'PRE', 'constantes'), 
+    (2, 'DEL', '{'), 
+    (3, 'PRE', 'real'), 
+    (3, 'IDE', 'test1'), 
+    (3, 'REL', '='), 
+    (3, 'DEL', '('), 
+    (3, 'NRO', '56'), 
+    (3, 'ART', '+'), 
+    (3, 'NRO', '7'), 
+    (3, 'ART', '+'), 
+    (3, 'DEL', '('), 
+    (3, 'DEL', '('), 
+    (3, 'NRO', '2'), 
+    (3, 'ART', '+'), 
+    (3, 'NRO', '3'), 
+    (3, 'DEL', ')'), 
+    (3, 'DEL', ')'), 
+    (3, 'ART', '+'), 
+    (3, 'NRO', '8'), 
+    (3, 'DEL', ')'), 
+    (3, 'DEL', ';'), 
+    (4, 'PRE', 'inteiro'), 
+    (4, 'IDE', 'test2'), 
+    (4, 'REL', '='), 
+    (4, 'DEL', '('), 
+    (4, 'NRO', '634636'), 
+    (4, 'ART', '+'), 
+    (4, 'NRO', '7'), 
+    (4, 'ART', '-'), 
+    (4, 'DEL', '('), 
+    (4, 'DEL', '('), 
+    (4, 'NRO', '31'), 
+    (4, 'ART', '*'), 
+    (4, 'NRO', '743'), 
+    (4, 'DEL', ')'), 
+    (4, 'DEL', ')'), 
+    (4, 'ART', '+'), 
+    (4, 'NRO', '8'), 
+    (4, 'DEL', ')'),  
+    (4, 'NRO', '-16'), 
+    (4, 'DEL', ';'), 
+    (5, 'PRE', 'char'), 
+    (5, 'IDE', 't8'), 
+    (5, 'REL', '='), 
+    (5, 'CAC', '"&"'), 
+    (5, 'DEL', ';'), 
+    (6, 'DEL', '}'), 
+    (7, 'PRE', 'principal'), 
+    (7, 'DEL', '('),
+    (7, 'DEL', ')'),
+    (7, 'DEL', '{'), 
+    (7, 'DEL', '}'), 
+    (8, 'DEL', '}')
+]
 
-def executar_analisador_lexico():
-    try:
-        result = subprocess.run(['python', path_to_analisador], check=True, capture_output=True, text=True)
-        print("Saída do Analisador Lexico:\n", result.stdout)
-    except subprocess.CalledProcessError as e:
-        print("Erro ao executar o Analisador Lexico:", e.stderr)
-
-executar_analisador_lexico()
-
-def ler_arquivos_saida(dir_files):
-    lista_tuplas = []
-    for arquivo in os.listdir(dir_files):
-        if arquivo.endswith('-saida.txt'):
-            caminho_arquivo = os.path.join(dir_files, arquivo)
-            with open(caminho_arquivo, 'r') as file:
-                linhas = file.readlines()
-                for linha in linhas:
-                    linha = linha.strip()  
-                    if linha and linha != "Sucesso": 
-                        tupla = tuple(linha.split())
-                        lista_tuplas.append(tupla)
-            parser = Parser(lista_tuplas)
-            parser.parse()
+parser = Parser(tokens)
+parser.parse()
 
 
-ler_arquivos_saida(dir_files)
+
+# def executar_analisador_lexico():
+#     try:
+#         result = subprocess.run(['python', path_to_analisador], check=True, capture_output=True, text=True)
+#         print("Saída do Analisador Lexico:\n", result.stdout)
+#     except subprocess.CalledProcessError as e:
+#         print("Erro ao executar o Analisador Lexico:", e.stderr)
+
+# executar_analisador_lexico()
+
+# def ler_arquivos_saida(dir_files):
+#     lista_tuplas = []
+#     for arquivo in os.listdir(dir_files):
+#         if arquivo.endswith('-saida.txt'):
+#             caminho_arquivo = os.path.join(dir_files, arquivo)
+#             with open(caminho_arquivo, 'r') as file:
+#                 linhas = file.readlines()
+#                 for linha in linhas:
+#                     linha = linha.strip()  
+#                     if linha and linha != "Sucesso": 
+#                         tupla = tuple(linha.split())
+#                         lista_tuplas.append(tupla)
+#             parser = Parser(lista_tuplas)
+#             parser.parse()
+
+
+# ler_arquivos_saida(dir_files)
