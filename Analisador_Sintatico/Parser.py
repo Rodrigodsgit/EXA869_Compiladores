@@ -3,6 +3,7 @@ import os
 
 path_to_analisador = os.path.join('..', 'Analisador_Lexico', 'AnalisadorLexico.py')
 dir_files = os.path.join('..', 'Analisador_Lexico', 'files')
+dir_files_sintatico = os.path.join(os.path.dirname(__file__), 'files')
 
 class Parser:
     def __init__(self, tokens):
@@ -529,15 +530,14 @@ class Parser:
             self.match('DEL', ')')
 
 # ------------------------------------------------------------------
-    def parse(self):
+    def parse(self, caminho_saida):
         self.algoritmo()
-        if self.errors:
-            print("Erros encontrados durante a análise:")
-            for error in self.errors:
-                print(error)
-        else:
-            print("Análise concluída com sucesso, sem erros.")
-
+        with open(caminho_saida, 'w') as file:
+            if self.errors:
+                    for error in self.errors:
+                        file.write(error + '\n')
+            else:
+               file.write("Sucesso")
 
 def executar_analisador_lexico():
     try:
@@ -560,8 +560,10 @@ def ler_arquivos_saida(dir_files):
                     if linha and linha != "Sucesso": 
                         tupla = tuple(linha.split())
                         lista_tuplas.append(tupla)
+
+            caminho_saida = os.path.join(dir_files_sintatico, f"{arquivo[:-4]}-sintatico.txt")
             parser = Parser(lista_tuplas)
-            parser.parse()
+            parser.parse(caminho_saida)
 
 
 ler_arquivos_saida(dir_files)
