@@ -105,7 +105,7 @@ async def processar_numeros(linha: str, posicao: int, saida: aiofiles.threadpool
         if  posicao + 1 < len(linha):    
             if linha[posicao + 1].isdigit():
                 if not posicao == 0:
-                    if linha[posicao - 1].isalnum() or token_atual == "IDE" or token_atual == "NRO":
+                    if linha[posicao - 1].isalnum() or token_atual == "IDE" or token_atual == "NRO" or linha[posicao - 1] == ')':
                         return posicao, erro_encontrado, token_atual
             else:
                 return posicao, erro_encontrado, token_atual

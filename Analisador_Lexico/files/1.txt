@@ -1,1 +1,0 @@
-principal, algoritmo, variaveis, constantes, registro, funcao, retorno, vazio, se, senao, enquanto, leia, escreva, inteiro, real, booleano, char, cadeia, verdadeiro, falso
