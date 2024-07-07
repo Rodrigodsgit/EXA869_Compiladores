@@ -6,8 +6,9 @@ algoritmo {
         char caractereExemplo = "A";
         inteiro test3 = (056+7+(2+3)+8), test4=ab;
         cadeia anothertest = "zero", testsinglechar = "%";
-        real test1 = (56+7+((2+3))+8); inteiro test2 = (634636+7-((31*743))+8)-16; char t8="&";
+        real test1 = (56+7+((2+3))+8); inteiro test2 = (634636+7-((31*743))+8) - 16; char t8="&";
     }
+    
 
     variaveis {
         booleano exemploBooleano;
@@ -15,13 +16,59 @@ algoritmo {
         real exemploReal;
         char exemploCaractere;
         cadeia exemploCadeia;
+        teste exemploteste;
     }
 
     registro Pessoa {
     cadeia nome; 
     inteiro idade;
     booleano ativo;
-}
+    }
+        funcao vazio blabla(){
+        variaveis {
+            aluno a, b, c, d, e;
+        }
+        
+        a.nome = "Pedro";
+        
+        b.iniciais[0] = "A";
+        b.iniciais[1] = "K";
+        b.iniciais[2] = "M";
+        b.iniciais[3] = "I";
+        b.iniciais[4] = "P";
+        
+        c.idade = 21;
+        
+        d.matricula = 45920494;
+        
+        e.materiasMatriculadas[0] = "Fisica";
+        e.materiasMatriculadas[1] = "Calculo 1";
+        
+        retorno;
+    }
+
+            funcao vazio blabla(){
+        variaveis {
+            aluno a, b, c, d, e;
+        }
+        
+        a.nome = "Pedro";
+        
+        b.iniciais[0] = "A";
+        b.iniciais[1] = "K";
+        b.iniciais[2] = "M";
+        b.iniciais[3] = "I";
+        b.iniciais[4] = "P";
+        
+        c.idade = 21;
+        
+        d.matricula = 45920494;
+        
+        e.materiasMatriculadas[0] = "Fisica";
+        e.materiasMatriculadas[1] = "Calculo 1";
+        
+        retorno;
+    }
 
 
  principal() {

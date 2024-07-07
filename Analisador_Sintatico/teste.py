@@ -10,6 +10,7 @@ class Parser:
         self.current_token_index = 0
         self.errors = []
         self.fechaparetense = '}'
+        self.recovered = True
 
 
     def current_token(self):
@@ -41,44 +42,70 @@ class Parser:
         self.match('DEL', '}')
 
     def corpo(self):
-        expected_blocks = ['constantes', 'variaveis', 'registro', 'funcao', 'principal']
+        block_order = ['constantes', 'variaveis', 'registro', 'funcao', 'principal']
+        block_count = {'constantes': 0, 'variaveis': 0, 'registro': 0, 'funcao': 0, 'principal': 0}
         found_principal = False
 
-        while self.current_token() != 'EOF' and not found_principal:
+        while self.current_token()[1] != 'EOF' and not found_principal:
             token = self.current_token()
-            if token[2] == 'principal':
-                self.funcao_principal()
-                expected_blocks.remove('principal')
-                found_principal = True
-            # Logica errada, mudar para ifs e colocar o remove no final de cada
-            elif token[2] in expected_blocks:
-                if token[2] == 'constantes':
-                    self.bloco_constantes()
-                elif token[2] == 'variaveis':
-                    self.bloco_variaveis()
-                elif token[2] == 'registro':
-                    self.bloco_registro()
-                elif token[2] == 'funcao':
-                    self.funcao()
-                expected_blocks.remove(token[2])
+            block_type = token[2]
+            if block_type in block_order:
+                if block_type == 'constantes':
+                    if block_count['constantes'] == 0 and block_count['variaveis'] == 0 and block_count['registro'] == 0 and block_count['funcao'] == 0:
+                        self.bloco_constantes()
+                        block_count['constantes'] += 1
+                        self.recovered = True
+                    else:
+                       block_order.remove(block_type)
+                elif block_type == 'variaveis':
+                    if block_count['variaveis'] == 0 and block_count['registro'] == 0 and block_count['funcao'] == 0:
+                        self.bloco_variaveis()
+                        block_count['variaveis'] += 1
+                        self.recovered = True
+                    else:
+                        block_order.remove(block_type)
+                elif block_type == 'registro':
+                    if block_count['registro'] == 0 and block_count['funcao'] == 0:
+                        self.bloco_registro()
+                        block_count['registro'] += 1
+                        self.recovered = True
+                    else:
+                        block_order.remove(block_type)
+                elif block_type == 'funcao':
+                    if block_count['principal'] == 0:
+                        self.funcao()
+                        block_count['funcao'] += 1
+                        self.recovered = True
+                    else:
+                       block_order.remove(block_type)
+                elif block_type == 'principal':
+                    if block_count['principal'] == 0:
+                        self.funcao_principal()
+                        block_count['principal'] += 1
+                        found_principal = True
+                    else:
+                       block_order.remove(block_type)
             else:
-                self.errors.append(f"Erro: Na linha {token[0]} esperava-se {' ou '.join(expected_blocks)} e foi encontrado {token[2]}")
-                self.advance()  # 
+                if self.recovered:
+                    self.errors.append(f"Erro: Na linha {token[0]} esperava-se {' ou '.join(block_order)} e foi encontrado {token[2]}")
+                    self.advance()
+                    self.recovered = False
+                else:
+                    self.advance()
 
         # Verifica se há tokens após o bloco 'principal'
         if found_principal and self.current_token()[2] != '}':
             token = self.current_token()
             if token[0] == 'EOF':
-                self.errors.append(f"Erro: Na linha {token[0]} esperava-se '{self.fechaparetense}'e foi encontrado EOF")
+                self.errors.append(f"Erro: Na linha {token[0]} esperava-se '{self.fechaparetense}' e foi encontrado EOF")
                 return
-            self.errors.append(f"Erro: Na linha {token[0]} não se esperava nenhum bloco após 'principal', mas encontrado {token[2]}")
-            while (self.current_token()[0] != 'EOF') and (self.current_token()[2] != '}'):  
+            self.errors.append(f"Erro: Na linha {token[0]} não se esperava nenhum bloco após 'principal', mas foi encontrado {token[2]}")
+            while self.current_token()[0] != 'EOF' and self.current_token()[2] != '}':
                 self.advance()
 
         # Verifica se o bloco 'principal' foi encontrado
         elif not found_principal:
             self.errors.append("Erro: Bloco 'principal' não encontrado, mas é obrigatório.")
-
 
 # ------------------------------------------------------------------
 
@@ -202,34 +229,35 @@ class Parser:
             self.match('DEL', ')')
 
     def expressao_numerica(self):
-        self.current_token()
+        token = self.current_token()
         self.expressao_MD()
         self.operacao_AS()
 
     def operacao_AS(self):
-        self.current_token()
+        token = self.current_token()
         if self.current_token()[2] in ['+', '-']:
-            op = self.current_token()[2]
+            token = self.current_token()
             self.advance()
             self.expressao_numerica()
 
     def expressao_MD(self):
-        self.current_token()
+        token = self.current_token()
         self.parcela_numerica()
         self.operacao_MD()
 
     def operacao_MD(self):
-        self.current_token()
+        token = self.current_token()
         if self.current_token()[2] in ['*', '/']:
-            op = self.current_token()[2]
+            token = self.current_token()
             self.advance()
             self.expressao_MD()
 
     def parcela_numerica(self):
-        self.current_token()
+        token = self.current_token()
         if self.current_token()[1] in ['NRO', 'IDE']:
             self.advance()
         elif self.current_token()[2] == '(':
+            token = self.current_token()
             self.advance()
             self.expressao_numerica()
             self.match('DEL', ')')
@@ -246,7 +274,7 @@ class Parser:
     def declaracao_de_variavel(self):
         token = self.current_token()
         tipos = ['booleano', 'inteiro', 'real', 'char', 'cadeia']
-        if token[2] in tipos:
+        if token[2] in tipos or token[1] == 'IDE':
             self.tipo_variavel()
             self.IDE_vetor()
             self.listagem_de_identificador()
@@ -255,19 +283,25 @@ class Parser:
             self.errors.append(f"Erro: Tipo de variável inválido na linha {token[0]} encontrado {token[2]}")
             self.advance()
 
-    def tipo_variavel(self):
+    def tipo_variavel(self):  
         tipos = ['booleano', 'inteiro', 'real', 'char', 'cadeia']
-        if self.current_token()[2] in tipos:
+        if self.current_token()[2] in tipos or self.current_token()[1] == 'IDE':
             self.advance()
 
     def IDE_vetor(self):
+        token = self.current_token()
         self.match('IDE')
-        self.vetor
+        token = self.current_token()
+        self.vetor()
 
     def vetor(self):
+        token = self.current_token()
         while self.current_token()[2] == '[':
+            token = self.current_token()
             self.advance()
+            token = self.current_token()
             self.expressao_numerica()
+            token = self.current_token()
             self.match('DEL', ']')
 
     def listagem_de_identificador(self):
@@ -511,63 +545,40 @@ class Parser:
         else:
             print("Análise concluída com sucesso, sem erros.")
 
+
 # Exemplo de uso:
 tokens = [
-    (1, 'PRE', 'algoritmo'), 
-    (1, 'DEL', '{'), 
-    (2, 'PRE', 'constantes'), 
-    (2, 'DEL', '{'), 
-    (3, 'PRE', 'real'), 
-    (3, 'IDE', 'test1'), 
-    (3, 'REL', '='), 
-    (3, 'DEL', '('), 
-    (3, 'NRO', '56'), 
-    (3, 'ART', '+'), 
-    (3, 'NRO', '7'), 
-    (3, 'ART', '+'), 
-    (3, 'DEL', '('), 
-    (3, 'DEL', '('), 
-    (3, 'NRO', '2'), 
-    (3, 'ART', '+'), 
-    (3, 'NRO', '3'), 
-    (3, 'DEL', ')'), 
-    (3, 'DEL', ')'), 
-    (3, 'ART', '+'), 
-    (3, 'NRO', '8'), 
-    (3, 'DEL', ')'), 
-    (3, 'DEL', ';'), 
-    (4, 'PRE', 'inteiro'), 
-    (4, 'IDE', 'test2'), 
-    (4, 'REL', '='), 
-    (4, 'DEL', '('), 
-    (4, 'NRO', '634636'), 
-    (4, 'ART', '+'), 
-    (4, 'NRO', '7'), 
-    (4, 'ART', '-'), 
-    (4, 'DEL', '('), 
-    (4, 'DEL', '('), 
-    (4, 'NRO', '31'), 
-    (4, 'ART', '*'), 
-    (4, 'NRO', '743'), 
-    (4, 'DEL', ')'), 
-    (4, 'DEL', ')'), 
-    (4, 'ART', '+'), 
-    (4, 'NRO', '8'), 
-    (4, 'DEL', ')'),  
-    (4, 'NRO', '-16'), 
-    (4, 'DEL', ';'), 
-    (5, 'PRE', 'char'), 
-    (5, 'IDE', 't8'), 
-    (5, 'REL', '='), 
-    (5, 'CAC', '"&"'), 
-    (5, 'DEL', ';'), 
-    (6, 'DEL', '}'), 
-    (7, 'PRE', 'principal'), 
-    (7, 'DEL', '('),
-    (7, 'DEL', ')'),
-    (7, 'DEL', '{'), 
-    (7, 'DEL', '}'), 
-    (8, 'DEL', '}')
+    (1, "PRE", "algoritmo"),
+    (1, "DEL", "{"),
+    (3, "PRE", "funcao"),
+    (3, "IDE", "keyregister"),
+    (3, "IDE", "nada"),
+    (3, "DEL", "("),
+    (3, "DEL", ")"),
+    (3, "DEL", "{"),
+    (4, "PRE", "retorno"),
+    (4, "DEL", "("),
+    (4, "IDE", "a"),
+    (4, "ART", "/"),
+    (4, "IDE", "bdadb"),
+    (4, "DEL", "["),
+    (4, "NRO", "0"),
+    (4, "DEL", "]"),
+    (4, "DEL", ")"),
+    (4, "ART", "-"),
+    (4, "IDE", "bdadb"),
+    (4, "DEL", "["),
+    (4, "NRO", "11"),
+    (4, "DEL", "]"),
+    (4, "DEL", ";"),
+    (5, "DEL", "}"),
+    (7, "PRE", "principal"),
+    (7, "DEL", "("),
+    (7, "DEL", ")"),
+    (7, "DEL", "{"),
+    (9, "DEL", "}"),
+    (10, "DEL", "}"),
+    ("Sucesso",)
 ]
 
 parser = Parser(tokens)
@@ -575,29 +586,3 @@ parser.parse()
 
 
 
-# def executar_analisador_lexico():
-#     try:
-#         result = subprocess.run(['python', path_to_analisador], check=True, capture_output=True, text=True)
-#         print("Saída do Analisador Lexico:\n", result.stdout)
-#     except subprocess.CalledProcessError as e:
-#         print("Erro ao executar o Analisador Lexico:", e.stderr)
-
-# executar_analisador_lexico()
-
-# def ler_arquivos_saida(dir_files):
-#     lista_tuplas = []
-#     for arquivo in os.listdir(dir_files):
-#         if arquivo.endswith('-saida.txt'):
-#             caminho_arquivo = os.path.join(dir_files, arquivo)
-#             with open(caminho_arquivo, 'r') as file:
-#                 linhas = file.readlines()
-#                 for linha in linhas:
-#                     linha = linha.strip()  
-#                     if linha and linha != "Sucesso": 
-#                         tupla = tuple(linha.split())
-#                         lista_tuplas.append(tupla)
-#             parser = Parser(lista_tuplas)
-#             parser.parse()
-
-
-# ler_arquivos_saida(dir_files)
