@@ -230,7 +230,7 @@ async def processar_operadores_logicos(linha: str, posicao: int, saida: aiofiles
             token_atual = "REL"
             posicao += 2
         else:
-            posicao, erro_encontrado, token_atual = await token_malformado(linha, posicao, linha_num, erro_encontrado, lista_erros)
+            posicao, erro_encontrado, token_atual = await token_malformado(linha, posicao, linha_num, erro_encontrado, lista_erros, token_atual)
     else:
         if linha[posicao] == '!':
             await saida.write(f"{linha_num} LOG {linha[posicao]}\n")

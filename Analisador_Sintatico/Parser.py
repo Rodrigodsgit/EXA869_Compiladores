@@ -99,13 +99,13 @@ class Parser:
             if token[0] == 'EOF':
                 self.errors.append(f"Erro: Na linha {token[0]} esperava-se '{self.fechaparetense}' e foi encontrado EOF")
                 return
-            self.errors.append(f"Erro: Na linha {token[0]} não se esperava nenhum bloco após 'principal', mas foi encontrado {token[2]}")
+            self.errors.append(f"Erro: Na linha {token[0]} esperava-se '{self.fechaparetense}, e foi encontrado {token[2]}")
             while self.current_token()[0] != 'EOF' and self.current_token()[2] != '}':
                 self.advance()
 
         # Verifica se o bloco 'principal' foi encontrado
         elif not found_principal:
-            self.errors.append("Erro: Bloco 'principal' não encontrado, mas é obrigatório.")
+            self.errors.append("Erro: Na linha {token[0]} esperava-se 'principal', mas não foi encontrado")
 
 # ------------------------------------------------------------------
 
@@ -127,7 +127,7 @@ class Parser:
         elif token[2] == 'char':
             self.declaracao_de_caractere()
         else:
-            self.errors.append(f"Erro: Tipo de constante inválido na linha {token[0]} encontrado {token[2]}")
+            self.errors.append(f"Erro: Na linha {token[0]} esperava-se 'booleano', 'inteiro', 'real', 'cadeia' ou 'char' e foi encontrado {token[2]}")
             self.advance()
 
     def declaracao_booleana(self):
@@ -279,7 +279,7 @@ class Parser:
             self.listagem_de_identificador()
             self.match('DEL', ';')
         else:
-            self.errors.append(f"Erro: Tipo de variável inválido na linha {token[0]} encontrado {token[2]}")
+            self.errors.append(f"Erro: Na linha {token[0]} esperado 'booleano', 'inteiro', 'real', 'char' ou 'cadeia' encontrado {token[2]}")
             self.advance()
 
     def tipo_variavel(self):
@@ -341,7 +341,7 @@ class Parser:
         if self.current_token()[2] in tipos or self.current_token()[1] == 'IDE':
             self.advance()
         else:
-            self.errors.append(f"Erro: Tipo de retorno inválido na linha {self.current_token()[0]} encontrado {self.current_token()[2]}")
+            self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperado 'booleano', 'inteiro', 'real', 'char' ou 'cadeia' encontrado {self.current_token()[2]}")
             self.advance()
 
     def listagem_declaracao_parametros(self):
@@ -377,7 +377,7 @@ class Parser:
             elif self.current_token()[1] == 'IDE':
                 self.reatribuicao()
             else:
-                self.errors.append(f"Erro: Comando inválido na linha {self.current_token()[0]} encontrado {self.current_token()[2]}")
+                self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperado 'se', 'enquanto', 'leia', 'escreva' ou 'identificadores' encontrado {self.current_token()[2]}")
                 self.advance()
 
     def retorno(self):

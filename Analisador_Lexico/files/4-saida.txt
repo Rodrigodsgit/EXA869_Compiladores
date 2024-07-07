@@ -1,0 +1,25 @@
+2 PRE variaveis
+3 DEL {
+4 PRE cadeia
+4 IDE nome
+4 REL =
+4 CAC "nome pro'prio "
+4 DEL ;
+5 PRE cadeia
+5 IDE palavra
+5 REL =
+5 CAC ""
+5 DEL ;
+6 PRE cadeia
+6 IDE palavra2
+6 REL =
+6 CAC " "
+6 DEL ;
+7 PRE cadeia
+7 IDE sobrenome
+7 REL =
+7 CAC " sobre "
+7 IDE tutores
+9 DEL }
+
+7 CMF ";

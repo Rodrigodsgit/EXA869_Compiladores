@@ -1,0 +1,15 @@
+5 IDE a
+5 REL >
+5 IDE b
+6 PRE escreva
+7 IDE a
+7 REL =
+8 NRO 6
+8 ART +
+8 IDE e
+
+4 TMF @
+5 TMF ?
+6 TMF $
+7 TMF #
+8 TMF ^
