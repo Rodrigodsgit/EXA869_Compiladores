@@ -1,0 +1,4 @@
+Erro: Na linha 4 esperava-se um 'identificador', 'numero' ou '(' e foi encontrado 'nada'
+Erro: Na linha 11 esperava-se um 'identificador', 'numero' ou '(' e foi encontrado 'nada'
+Erro: Na linha 36 esperava-se funcao ou principal e foi encontrado 'se'
+Erro: Na linha 38 esperava-se um 'identificador' e foi encontrado ','

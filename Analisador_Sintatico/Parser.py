@@ -15,7 +15,8 @@ class Parser:
 
 
     def current_token(self):
-        return self.tokens[self.current_token_index] if self.current_token_index < len(self.tokens) else ('EOF', 'EOF', 'EOF')
+       token = self.tokens[self.current_token_index] if self.current_token_index < len(self.tokens) else ('EOF', 'EOF', 'EOF')
+       return token
 
     def advance(self):
         self.current_token_index += 1
@@ -29,7 +30,12 @@ class Parser:
             if token[0] == 'EOF':
                 return
             if first:
-                self.errors.append(f"Erro: Na linha {token[0]} esperava-se {expected_value} e foi encontrado {token[2]}")
+                if expected_value is None and expected_type == 'IDE':
+                    self.errors.append(f"Erro: Na linha {token[0]} esperava-se um 'identificador' e foi encontrado '{token[2]}'")
+                elif expected_value is None and expected_type == 'CAC':
+                    self.errors.append(f"Erro: Na linha {token[0]} esperava-se uma 'cadeia de carecteres' e foi encontrado '{token[2]}'")
+                else:
+                    self.errors.append(f"Erro: Na linha {token[0]} esperava-se '{expected_value}' e foi encontrado '{token[2]}'")
                 self.advance()
                 self.match(expected_type, expected_value, False)
             else:
@@ -56,6 +62,7 @@ class Parser:
                         self.bloco_constantes()
                         block_count['constantes'] += 1
                         self.recovered = True
+                        block_order.remove(block_type)
                     else:
                        block_order.remove(block_type)
                 elif block_type == 'variaveis':
@@ -63,10 +70,11 @@ class Parser:
                         self.bloco_variaveis()
                         block_count['variaveis'] += 1
                         self.recovered = True
+                        block_order.remove(block_type)
                     else:
                         block_order.remove(block_type)
                 elif block_type == 'registro':
-                    if block_count['registro'] == 0 and block_count['funcao'] == 0:
+                    if  block_count['funcao'] == 0:
                         self.bloco_registro()
                         block_count['registro'] += 1
                         self.recovered = True
@@ -77,6 +85,8 @@ class Parser:
                         self.funcao()
                         block_count['funcao'] += 1
                         self.recovered = True
+                        if block_count['funcao'] == 1:
+                            block_order.remove('registro')
                     else:
                        block_order.remove(block_type)
                 elif block_type == 'principal':
@@ -88,32 +98,30 @@ class Parser:
                        block_order.remove(block_type)
             else:
                 if self.recovered:
-                    self.errors.append(f"Erro: Na linha {token[0]} esperava-se {' ou '.join(block_order)} e foi encontrado {token[2]}")
-                    self.advance()
+                    self.errors.append(f"Erro: Na linha {token[0]} esperava-se {' ou '.join(block_order)} e foi encontrado '{token[2]}'")
                     self.recovered = False
-                else:
-                    self.advance()
+                self.advance()
 
         # Verifica se há tokens após o bloco 'principal'
         if found_principal and self.current_token()[2] != '}':
             token = self.current_token()
             if token[0] == 'EOF':
-                self.errors.append(f"Erro: Na linha {token[0]} esperava-se '{self.fechaparetense}' e foi encontrado EOF")
+                self.errors.append(f"Erro: Na linha {token[0]} esperava-se '{self.fechaparetense}' e foi encontrado 'nada'")
                 return
-            self.errors.append(f"Erro: Na linha {token[0]} esperava-se '{self.fechaparetense}, e foi encontrado {token[2]}")
+            self.errors.append(f"Erro: Na linha {token[0]} esperava-se '{self.fechaparetense}', e foi encontrado '{token[2]}'")
             while self.current_token()[0] != 'EOF' and self.current_token()[2] != '}':
                 self.advance()
 
         # Verifica se o bloco 'principal' foi encontrado
         elif not found_principal:
-            self.errors.append("Erro: Na linha {token[0]} esperava-se 'principal', mas não foi encontrado")
+            self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperava-se 'principal', mas não foi encontrado")
 
 # ------------------------------------------------------------------
 
     def bloco_constantes(self):
         self.match('PRE', 'constantes')
         self.match('DEL', '{')
-        while self.current_token()[2] != '}':
+        while self.current_token()[2] != '}' and self.current_token()[0] != 'EOF':
             self.declaracao_de_constante()
         self.match('DEL', '}')
 
@@ -121,14 +129,20 @@ class Parser:
         token = self.current_token()
         if token[2] == 'booleano':
             self.declaracao_booleana()
+            self.recovered = True
         elif token[2] in ['inteiro', 'real']:
             self.declaracao_numerica()
+            self.recovered = True
         elif token[2] == 'cadeia':
             self.declaracao_de_cadeia()
+            self.recovered = True
         elif token[2] == 'char':
             self.declaracao_de_caractere()
+            self.recovered = True
         else:
-            self.errors.append(f"Erro: Na linha {token[0]} esperava-se 'booleano', 'inteiro', 'real', 'cadeia' ou 'char' e foi encontrado {token[2]}")
+            if self.recovered:
+                self.errors.append(f"Erro: Na linha {token[0]} esperava-se 'booleano', 'inteiro', 'real', 'cadeia' ou 'char' e foi encontrado '{token[2]}'")
+                self.recovered = False
             self.advance()
 
     def declaracao_booleana(self):
@@ -228,6 +242,8 @@ class Parser:
             self.advance()
             self.expressao_booleana()
             self.match('DEL', ')')
+        else:
+            self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperava-se 'verdadeiro', 'falso', 'identificador' ou '(' e foi encontrado 'nada'")
 
     def expressao_numerica(self):
         self.current_token()
@@ -261,13 +277,15 @@ class Parser:
             self.advance()
             self.expressao_numerica()
             self.match('DEL', ')')
+        else:
+            self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperava-se um 'identificador', 'numero' ou '(' e foi encontrado 'nada'")
 
 # ------------------------------------------------------------------
 
     def bloco_variaveis(self):
         self.match('PRE', 'variaveis')
         self.match('DEL', '{')
-        while self.current_token()[2] != '}':
+        while self.current_token()[2] != '}' and self.current_token()[0] != 'EOF':
             self.declaracao_de_variavel()
         self.match('DEL', '}')
 
@@ -279,8 +297,11 @@ class Parser:
             self.IDE_vetor()
             self.listagem_de_identificador()
             self.match('DEL', ';')
+            self.recovered = True
         else:
-            self.errors.append(f"Erro: Na linha {token[0]} esperado 'booleano', 'inteiro', 'real', 'char' ou 'cadeia' encontrado {token[2]}")
+            if self.recovered:
+                self.errors.append(f"Erro: Na linha {token[0]} esperado 'booleano', 'inteiro', 'real', 'char' ou 'cadeia' encontrado '{token[2]}'")
+                self.recovered = False
             self.advance()
 
     def tipo_variavel(self):
@@ -313,7 +334,7 @@ class Parser:
         self.match('DEL', '}')
 
     def listagem_bloco_variaveis(self):
-        while self.current_token()[2] != '}':
+        while self.current_token()[2] != '}' and self.current_token()[0] != 'EOF':
             self.declaracao_de_variavel()
 
 # ------------------------------------------------------------------
@@ -341,9 +362,14 @@ class Parser:
         tipos = ['booleano', 'inteiro', 'real', 'char', 'cadeia', 'vazio']
         if self.current_token()[2] in tipos or self.current_token()[1] == 'IDE':
             self.advance()
+            self.recovered = True
         else:
-            self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperado 'booleano', 'inteiro', 'real', 'char' ou 'cadeia' encontrado {self.current_token()[2]}")
-            self.advance()
+            if self.recovered:
+                self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperado 'booleano', 'inteiro', 'real', 'char' ou 'cadeia' encontrado {self.current_token()[2]}")
+                self.recovered = False
+            if self.current_token()[0] != 'EOF':
+                self.advance()
+                self.tipo_retorno()
 
     def listagem_declaracao_parametros(self):
         if self.current_token()[2] != ')':
@@ -366,27 +392,33 @@ class Parser:
         self.retorno()
 
     def bloco(self):
-        while self.current_token()[2] not in ['}', 'retorno']:
+        while self.current_token()[2] not in ['}', 'retorno'] and self.current_token()[0] != 'EOF':
             if self.current_token()[2] == 'se':
                 self.se()
+                self.recovered = True
             elif self.current_token()[2] == 'enquanto':
                 self.enquanto()
+                self.recovered = True
             elif self.current_token()[2] == 'leia':
                 self.leia()
+                self.recovered = True
             elif self.current_token()[2] == 'escreva':
                 self.escreva()
+                self.recovered = True
             elif self.current_token()[1] == 'IDE':
                 self.reatribuicao()
+                self.recovered = True
             else:
-                self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperado 'se', 'enquanto', 'leia', 'escreva' ou 'identificadores' encontrado {self.current_token()[2]}")
+                if self.recovered:
+                    self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperado 'se', 'enquanto', 'leia', 'escreva' ou 'identificadores' encontrado '{self.current_token()[2]}'")
+                    self.recovered = False
                 self.advance()
 
     def retorno(self):
-        if self.current_token()[2] == 'retorno':
-            self.match('PRE', 'retorno')
-            if self.current_token()[2] != ';':
-                self.expressao_geral()
-            self.match('DEL', ';')
+        self.match('PRE', 'retorno')
+        if self.current_token()[2] != ';':
+            self.expressao_geral()
+        self.match('DEL', ';')
 
     def se(self):
         self.match('PRE', 'se')
@@ -528,12 +560,14 @@ class Parser:
             self.advance()
             self.expressao_geral()
             self.match('DEL', ')')
+        else: 
+            self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperava-se identificados, numero, cadeia de carecteres, verdadeiro, falso, ou ( e foi encontrado nada " )
 
 # ------------------------------------------------------------------
     def parse(self, caminho_saida):
         self.algoritmo()
         with open(caminho_saida, 'w') as file:
-            if self.errors:
+            if self.errors:                    
                     for error in self.errors:
                         file.write(error + '\n')
             else:
@@ -549,8 +583,8 @@ def executar_analisador_lexico():
 executar_analisador_lexico()
 
 def ler_arquivos_saida(dir_files):
-    lista_tuplas = []
     for arquivo in os.listdir(dir_files):
+        lista_tuplas = []
         if arquivo.endswith('-saida.txt'):
             caminho_arquivo = os.path.join(dir_files, arquivo)
             with open(caminho_arquivo, 'r') as file:
