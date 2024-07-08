@@ -1,1 +1,1 @@
-Erro: Na linha 34 esperado 'booleano', 'inteiro', 'real', 'char' ou 'cadeia' encontrado 2325
+Sucesso
