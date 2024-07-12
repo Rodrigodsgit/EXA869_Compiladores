@@ -1,6 +1,6 @@
 # Analisador Léxico em Python
 
-Este é um analisador léxico desenvolvido em Python que identifica tokens em um código fonte.
+Este é um analisador léxico e sintático desenvolvido em Python que identifica tokens em um código fonte.
 
 ## Como Executar
 
