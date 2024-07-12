@@ -243,7 +243,10 @@ class Parser:
             self.expressao_booleana()
             self.match('DEL', ')')
         else:
-            self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperava-se 'verdadeiro', 'falso', 'identificador' ou '(' e foi encontrado 'nada'")
+           self.errors.append(
+            f"Erro: Na linha {self.current_token()[0]} esperava-se 'verdadeiro', 'falso', 'identificador' ou '(' e foi encontrado '{'nada' if self.current_token() is None or self.current_token()[1] == 'EOF' else self.current_token()[2]}'"
+)
+
 
     def expressao_numerica(self):
         self.current_token()
@@ -278,7 +281,7 @@ class Parser:
             self.expressao_numerica()
             self.match('DEL', ')')
         else:
-            self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperava-se um 'identificador', 'numero' ou '(' e foi encontrado 'nada'")
+            self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperava-se um 'identificador', 'numero' ou '(' e foi encontrado '{'nada' if self.current_token() is None or self.current_token()[1] == 'EOF' else self.current_token()[2]}'")
 
 # ------------------------------------------------------------------
 
@@ -580,7 +583,7 @@ class Parser:
             self.match('DEL', ')')
         else: 
             if self.current_token()[1] != 'LOG':
-                self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperava-se identificados, numero, cadeia de carecteres, verdadeiro, falso, ou ( e foi encontrado nada " )
+                self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperava-se identificados, numero, cadeia de carecteres, verdadeiro, falso, ou ( e foi encontrado '{'nada' if self.current_token() is None or self.current_token()[1] == 'EOF' else self.current_token()[2]}'" )
 
 # ------------------------------------------------------------------
     def parse(self, caminho_saida):

@@ -1,6 +1,6 @@
 Erro: Na linha 3 esperava-se '=' e foi encontrado ','
-Erro: Na linha 5 esperava-se um 'identificador', 'numero' ou '(' e foi encontrado 'nada'
-Erro: Na linha 12 esperava-se um 'identificador', 'numero' ou '(' e foi encontrado 'nada'
+Erro: Na linha 5 esperava-se um 'identificador', 'numero' ou '(' e foi encontrado ')'
+Erro: Na linha 12 esperava-se um 'identificador', 'numero' ou '(' e foi encontrado ']'
 Erro: Na linha 14 esperava-se um 'identificador' e foi encontrado ','
 Erro: Na linha 21 esperado 'booleano', 'inteiro', 'real', 'char' ou 'cadeia' encontrado 'retorno'
 Erro: Na linha 38 esperava-se funcao ou principal e foi encontrado 'se'

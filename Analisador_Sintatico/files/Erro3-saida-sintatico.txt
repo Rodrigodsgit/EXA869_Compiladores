@@ -1,6 +1,6 @@
-Erro: Na linha 29 esperava-se um 'identificador', 'numero' ou '(' e foi encontrado 'nada'
-Erro: Na linha 32 esperava-se um 'identificador', 'numero' ou '(' e foi encontrado 'nada'
+Erro: Na linha 29 esperava-se um 'identificador', 'numero' ou '(' e foi encontrado '*'
+Erro: Na linha 32 esperava-se um 'identificador', 'numero' ou '(' e foi encontrado '/'
 Erro: Na linha 57 esperava-se ';' e foi encontrado '++'
 Erro: Na linha 67 esperava-se ';' e foi encontrado '!'
 Erro: Na linha 73 esperava-se ')' e foi encontrado '!'
-Erro: Na linha 77 esperava-se identificados, numero, cadeia de carecteres, verdadeiro, falso, ou ( e foi encontrado nada 
+Erro: Na linha 77 esperava-se identificados, numero, cadeia de carecteres, verdadeiro, falso, ou ( e foi encontrado ';'
