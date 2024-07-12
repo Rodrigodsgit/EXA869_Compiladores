@@ -1,0 +1,6 @@
+algoritmo{
+    principal(){
+        escreva("ola mundo");
+        retorno ;
+    }
+}

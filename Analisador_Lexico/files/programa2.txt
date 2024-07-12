@@ -1,0 +1,38 @@
+algoritmo{
+    // exemplo de declaração de constantes e varivaveis
+    constantes{
+        real a=1.27;
+        inteiro a=20,B=25,T=2*4/(1+6),TOTAL_ALUNOS=50;
+        booleano fim= verdadeiro || !falso;
+        cadeia msg="ola mundo";
+        char ptr = "T";
+    }   
+    variaveis{
+        inteiro matriz[100][2];
+        cadeia msgs[100];
+        real pi;
+        aluno alunos[50];
+        nota notas1[25],notas2[25];
+    }
+
+    registro aluno{
+        cadeia nome,matricula;
+        inteiro turma,turno;
+        booleano tempo_integral;
+    }
+
+    principal(){
+        variaveis{
+            inteiro i;
+        }
+
+        escreva(msg);
+        i=0;
+        enquanto(i<TOTAL_ALUNOS){
+            leia(alunos[i].nome);
+            i = i+1;
+        }
+        
+        retorno ;
+    }
+}

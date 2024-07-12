@@ -1,0 +1,16 @@
+1 PRE algoritmo
+1 DEL {
+2 PRE principal
+2 DEL (
+2 DEL )
+2 DEL {
+3 PRE escreva
+3 DEL (
+3 CAC "ola mundo"
+3 DEL )
+3 DEL ;
+4 PRE retorno
+4 DEL ;
+5 DEL }
+6 DEL }
+Sucesso

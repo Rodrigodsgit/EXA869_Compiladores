@@ -1,0 +1,79 @@
+// erros de expreção geral
+
+algoritmo{
+	constantes{
+        booleano cb1 = verdadeiro, cb2 = falso, cb3 = a||false;
+        inteiro ci1 = 1, ci2 = 1+9, ci3 = 6.90, ci4 = ci1;
+        real cr1 = (4)-1.6, cr1 = (5)+5-a*(3+2);
+        cadeia cc1 = "cadeia", cc2 = "-+*()";
+        char cc1 = "A";
+	}
+
+    variaveis {
+        umRegistro R1;
+        booleano vb1, vb2[3], vb[3][2][1]; 
+        inteiro vi1, vi2[2+5], vi3[4/4*4.4*(-4.8584829174)]; //não e para ter erro
+        real vr1, vr2;
+        real vr1, vr2;
+        cadeia cc1[4];
+        char vc1[50.2];
+    }
+
+    registro umRegistro{
+        
+    }
+
+    registro outroRegistro{
+        umRegistro R1;
+        booleano rb[3][2][1];  
+        real rr;
+        real rr2;
+        char rc[50.2];
+    }
+
+    funcao vazio ide(inteiro p1, real p[(4)-3*((-4))]){
+        retorno p1;
+    }
+    
+    funcao booleano ide2(cadeia pc[30.76], cadeia pc, char r, umRegistro ur){
+        constantes {
+            real umaConstante = a;
+        }
+        variaveis {
+            umRegistro p;
+        }
+        se (true) {
+            a = a |||| b;  //erro
+        }
+        leia(a,b,c);
+        escreva(a,b,c);
+        retorno;    
+    }
+
+    principal() {
+        constantes {
+            char b = "a";
+        }
+        variaveis{
+            umRegistro ur;
+            booleano b;
+        }
+        se (b) { 
+
+        } senao {
+            v = (60/50) > 9 && (4-(-5)) <= o || !R !D; //erro
+            leia(r);
+            escreva(v);
+        }
+
+        f = 0;
+        enquanto (3!f){ //erro
+            f = f + 1;
+            escreva(f,1);
+        }
+        g = 4 > ; //erro
+        enquanto (falso) {}
+        
+        retorno verdadeir;
+    }
+}

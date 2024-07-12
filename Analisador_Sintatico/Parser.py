@@ -561,7 +561,8 @@ class Parser:
             self.expressao_geral()
             self.match('DEL', ')')
         else: 
-            self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperava-se identificados, numero, cadeia de carecteres, verdadeiro, falso, ou ( e foi encontrado nada " )
+            if self.current_token()[1] != 'LOG':
+                self.errors.append(f"Erro: Na linha {self.current_token()[0]} esperava-se identificados, numero, cadeia de carecteres, verdadeiro, falso, ou ( e foi encontrado nada " )
 
 # ------------------------------------------------------------------
     def parse(self, caminho_saida):

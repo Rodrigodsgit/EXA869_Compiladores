@@ -170,8 +170,8 @@ async def processar_identificadores(linha: str, posicao: int, saida: aiofiles.th
 
     possivel_identificador = linha[inicio_identificador:posicao]
 
-    if posicao < len(linha) and not (linha[posicao].isspace() or linha[posicao] in ';,.()[]{}+-*/=!&|"\'\n'):
-        while posicao < len(linha) and not linha[posicao].isspace() and not linha[posicao] in ';,.()[]{}+-*/=!&|"\'\n':
+    if posicao < len(linha) and not (linha[posicao].isspace() or linha[posicao] in '><;,.()[]{}+-*/=!&|"\'\n'):
+        while posicao < len(linha) and not linha[posicao].isspace() and not linha[posicao] in '><;,.()[]{}+-*/=!&|"\'\n':
             posicao += 1
         token_malformado = linha[inicio_identificador:posicao]
         lista_erros.append(f"{linha_num} IMF {token_malformado}\n")

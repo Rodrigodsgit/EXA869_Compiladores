@@ -1,0 +1,55 @@
+algoritmo {
+    constantes {
+        cadeia sofrimento = "infinito";
+        inteiro continha = 7+1/3*4/1*2-(2+3)*4/1;
+    }
+    
+    variaveis {
+        real certezaDeSucesso;
+        real vetorqualquer[12];
+    }
+    
+    registro aluno {
+        cadeia nome, curso;
+        char iniciais[10];
+        inteiro idade, matricula, semestre;
+        cadeia materiasMatriculadas[15];
+    }
+    
+    funcao vazio blabla(){
+        variaveis {
+            aluno a, b, c, d, e;
+        }
+        
+        a.nome = "Pedro";
+        
+        b.iniciais[0] = "A";
+        b.iniciais[1] = "K";
+        b.iniciais[2] = "M";
+        b.iniciais[3] = "I";
+        b.iniciais[4] = "P";
+        
+        c.idade = 21;
+        
+        d.matricula = 45920494;
+        
+        e.materiasMatriculadas[0] = "Fisica";
+        e.materiasMatriculadas[1] = "Calculo 1";
+        
+        retorno;
+    }
+    
+    funcao keyregister nada (inteiro a, real bdadb[12]) {
+        retorno (a/bdadb[0])-bdadb[11];
+    }
+    
+    principal () {
+        
+        se ((abc>9)>1&&u<=7) {    
+            resultado1 = blabla();
+            resultado2 = nada(587394, vetorqualquer);
+        }
+        
+        retorno;
+    }
+}

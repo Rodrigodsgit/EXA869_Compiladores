@@ -1,0 +1,1 @@
+Erro: Na linha 32 esperava-se ')' e foi encontrado '.'
