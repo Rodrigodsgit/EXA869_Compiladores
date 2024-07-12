@@ -1,0 +1,38 @@
+algoritmo {
+    constantes {
+        booleano verdadeiroExemplo = verdadeiro;
+        inteiro numeroExemplo = 10;
+        cadeia textoExemplo = "Exemplo de texto";
+        char caractereExemplo = "A";
+    }
+
+    variaveis {
+        booleano exemploBooleano;
+        inteiro exemploInteiro;
+        real exemploReal;
+        char exemploCaractere;
+        cadeia exemploCadeia;
+    }
+
+    principal() {
+        exemploBooleano = verdadeiroExemplo && falso;
+        exemploInteiro = numeroExemplo + 5;
+        exemploReal = 3.14;
+        exemploCaractere = "B";
+        exemploCadeia = "Outro exemplo de texto";
+
+        se (exemploBooleano) {
+            escreva("Exemplo verdadeiro");
+        } senao {
+            escreva("Exemplo falso");
+        }
+
+        enquanto (exemploInteiro < 20) {
+            exemploInteiro = exemploInteiro + 1;
+            escreva(exemploInteiro);
+        }
+
+        leia(exemploCadeia);
+        retorno;
+    }
+}

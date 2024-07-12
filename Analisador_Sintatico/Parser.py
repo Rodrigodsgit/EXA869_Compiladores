@@ -454,13 +454,31 @@ class Parser:
         self.match('DEL', ';')
 
     def listagem_leia(self):
-        self.IDE_vetor()
+        self.IDE_vetor_ou_composto_ou_chamada()
         self.mais_parametros_leia()
 
     def mais_parametros_leia(self):
         while self.current_token()[2] == ',':
             self.advance()
-            self.IDE_vetor()
+            self.IDE_vetor_ou_composto_ou_chamada()
+
+    def IDE_vetor_ou_composto_ou_chamada(self):
+        self.match('IDE')
+        self.vetor_ou_composto_ou_chamada()
+
+    def vetor_ou_composto_ou_chamada(self):
+        while self.current_token()[2] in ['[', '.', '(']:
+            if self.current_token()[2] == '[':
+                self.advance()
+                self.expressao_numerica()
+                self.match('DEL', ']')
+            elif self.current_token()[2] == '.':
+                self.advance()
+                self.match('IDE')
+            elif self.current_token()[2] == '(':
+                self.advance()
+                self.listagem_parametros()
+                self.match('DEL', ')')
 
     def escreva(self):
         self.match('PRE', 'escreva')

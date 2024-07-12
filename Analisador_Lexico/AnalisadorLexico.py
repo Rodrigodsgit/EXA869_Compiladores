@@ -132,7 +132,7 @@ async def processar_numeros(linha: str, posicao: int, saida: aiofiles.threadpool
                 elif ponto_ocorrencia == 2:
                     break
                 ponto_ocorrencia += 1
-        elif  (linha[posicao].isspace() or (linha[posicao] in ';,()[]{}+-*/=!&|"\'\n')):
+        elif  (linha[posicao].isspace() or (linha[posicao] in '><;,()[]{}+-*/=!&|"\'\n')):
             if posicao + 1 < len(linha):
                 if (linha[posicao] == "&" and linha[posicao +1] == "&") or (linha[posicao] == "|" and linha[posicao +1] == "|"):
                     break

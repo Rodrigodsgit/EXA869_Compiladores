@@ -1,0 +1,3 @@
+Erro: Na linha 11 esperava-se constantes ou registro ou funcao ou principal e foi encontrado 'variaveis'
+Erro: Na linha 47 esperado 'se', 'enquanto', 'leia', 'escreva' ou 'identificadores' encontrado 'variaveis'
+Erro: Na linha 53 esperava-se funcao ou principal e foi encontrado '}'
